@@ -1,0 +1,268 @@
+{
+  "info": {
+    "_postman_id": "fa186409-7e52-4b72-957c-37b77855aa3c",
+    "name": "PetStore",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33276378"
+  },
+  "item": [
+    {
+      "name": "01  - POST Add Pet",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "const json = pm.response.json();\r",
+              "\r",
+              "// Guardar variables\r",
+              "pm.environment.set(\"petId\", json.id);\r",
+              "pm.environment.set(\"petName\", json.name);\r",
+              "\r",
+              "pm.test(\"petId fue generado\", function () {\r",
+              "    pm.expect(json.id).to.be.a(\"number\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"petName no viene vacío\", function () {\r",
+              "    pm.expect(json.name).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"id\": 10101,\r\n  \"name\": \"SofkaPet\",\r\n  \"photoUrls\": [],\r\n  \"status\": \"available\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Get pet by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "  pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "const json = pm.response.json();\r",
+              "\r",
+              "pm.test(\"El id coincide con el creado\", function () {\r",
+              "  pm.expect(json.id).to.eql(Number(pm.environment.get(\"petId\")));\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El nombre coincide con el creado\", function () {\r",
+              "  pm.expect(json.name).to.eql(pm.environment.get(\"petName\"));\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Update pet to sold",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "const json = pm.response.json();\r",
+              "\r",
+              "// Validar que el id sea el mismo\r",
+              "pm.test(\"El id se mantiene\", function () {\r",
+              "    pm.expect(json.id).to.eql(Number(pm.environment.get(\"petId\")));\r",
+              "});\r",
+              "\r",
+              "// Validar que el nombre fue actualizado\r",
+              "pm.test(\"El nombre fue actualizado\", function () {\r",
+              "    pm.expect(json.name).to.eql(\"SofkaPetSold\");\r",
+              "});\r",
+              "\r",
+              "// Validar que el status es sold\r",
+              "pm.test(\"El status es sold\", function () {\r",
+              "    pm.expect(json.status).to.eql(\"sold\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"id\": {{petId}},\r\n  \"name\": \"SofkaPetSold\",\r\n  \"status\": \"sold\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Delete pet",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "const json = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Pet eliminado correctamente\", function () {\r",
+              "    pm.expect(json.message).to.eql(pm.environment.get(\"petId\").toString());\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Get pets by status (Sold)",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "PetStore\n",
+      "value": ""
+    },
+    {
+      "key": "petId",
+      "value": ""
+    },
+    {
+      "key": "petName",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

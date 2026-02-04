@@ -1,0 +1,28 @@
+# Conclusiones y hallazgos - PetStore API (Postman)
+
+## Hallazgos principales
+1. **Reproducibilidad del flujo**: El flujo CRUD básico de mascotas es reproducible de extremo a extremo utilizando variables de entorno (`petId`, `petName`), lo que reduce hardcode y facilita la ejecución automatizada.
+2. **Persistencia variable / comportamiento compartido**: Al ser una API pública de demo, los datos pueden ser modificados por terceros. Por lo tanto, se deben minimizar dependencias a datos estáticos y validar por ID generado en tiempo de ejecución.
+3. **Formato de respuesta (JSON/XML)**: Dependiendo del request y headers, el servicio puede devolver XML o JSON. Esto impacta los scripts si se espera siempre `pm.response.json()`. Recomendación: estandarizar con `Accept: application/json`.
+4. **Validaciones funcionales efectivas**: Los asserts implementados cubren:
+   - Código de estado HTTP
+   - Estructura de respuesta (JSON válido)
+   - Integridad de datos (id/nombre/status)
+   - Consistencia del objeto modificado
+5. **Buenas prácticas aplicadas**:
+   - Variables de entorno para datos dinámicos
+   - Requests nombrados y ordenados por flujo
+   - Evidencias versionadas en el repositorio
+
+## Riesgos / Consideraciones
+1. **Ambiente compartido**: Puede existir colisión de IDs y datos modificados por otros usuarios (demo pública). Esto puede provocar falsos negativos si se valida contra data fija.
+2. **Validación por status**: La búsqueda por status devuelve múltiples mascotas; se recomienda validar que el `petId` esté incluido en el array para asegurar trazabilidad del flujo.
+
+## Recomendaciones de mejora
+1. Agregar un test robusto en el request 04 que confirme que el `petId` existe en el listado de `sold`.
+2. Incorporar ejecución automatizada con Newman (CLI) para integrarlo a CI/CD:
+   - Reporte en HTML/JUnit
+   - Ejecución parametrizada por environment
+
+## Conclusión final
+La colección implementa el flujo solicitado con validaciones funcionales suficientes, manteniendo trazabilidad mediante variables y evidencias. El resultado es reproducible y apto para revisión técnica, con consideraciones claras sobre el comportamiento de una API de demostración compartida.
